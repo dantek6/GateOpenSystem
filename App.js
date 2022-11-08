@@ -1,20 +1,48 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from "react";
+import { Text, View, StyleSheet, Image, Pressable } from "react-native";
+import lockCloseImage from "./assets/lock-close.png";
+import lockOpenImage from "./assets/lock-open.png";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+export default class App extends Component {
+  state = {
+    lockStatus: "Portón Cerrado",
+    image: lockCloseImage,
+  };
+  pressedButton = () => {
+    if (this.state.lockStatus === "Portón Cerrado") {
+      this.setState({
+        lockStatus: "Portón Abierto",
+        image: lockOpenImage,
+      });
+    } else {
+      this.setState({
+        lockStatus: "Portón Cerrado",
+        image: lockCloseImage,
+      });
+    }
+  };
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>{this.state.lockStatus}</Text>
+        <Pressable onPress={() => this.pressedButton()} style={styles.button}>
+          <Image source={this.state.image} style={styles.image} />
+        </Pressable>
+      </View>
+    );
+  }
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#292929",
+  },
+  title: { fontSize: 28, color: "#fff" },
+  image: { width: 200, height: 200 },
+  button: {
+    marginTop: 10,
   },
 });
