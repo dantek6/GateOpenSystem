@@ -5,18 +5,18 @@ import lockOpenImage from "./assets/lock-open.png";
 
 export default class App extends Component {
   state = {
-    lockStatus: "Portón Cerrado",
+    lockStatus: "Portón Cerrado\n(Presione para abir)",
     image: lockCloseImage,
   };
   pressedButton = () => {
-    if (this.state.lockStatus === "Portón Cerrado") {
+    if (this.state.lockStatus === "Portón Cerrado\n(Presione para abir)") {
       this.setState({
-        lockStatus: "Portón Abierto",
+        lockStatus: "Portón Abierto\n(Presione para cerrar)",
         image: lockOpenImage,
       });
     } else {
       this.setState({
-        lockStatus: "Portón Cerrado",
+        lockStatus: "Portón Cerrado\n(Presione para abir)",
         image: lockCloseImage,
       });
     }
