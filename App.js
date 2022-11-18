@@ -1,23 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Image, Pressable } from "react-native";
 import lockCloseImage from "./assets/lock-close.png";
 import lockOpenImage from "./assets/lock-open.png";
 
-import { ref, update } from "firebase/database";
+import { ref, onValue, update } from "firebase/database";
 //import StartFirebase, { FirebaseContext } from './firebase';
 import { db } from "./firebase/database.js";
 
 export default function App() {
+  //alert(db)
   const [doneState, setDone] = useState(false);
+  
+  useEffect(() => {
+    return onValue(ref(db, "/Proyecto"), (querySnapShot) => {
+      let data = querySnapShot.val();
+      let locked = data.Puerta_Abierta;
+      setDone(locked);
+    });
+  }, []);
 
   const displays = {
     image: lockCloseImage,
     lockStatus: "Portón Cerrado\n(Presione para abir)",
   };
   pressedButton = () => {
-    setDone(!doneState);
+    //setDone(!doneState);
     update(ref(db, "/Proyecto"), {
-      Puerta_Abierta: doneState,
+      Puerta_Abierta: !doneState,
     });
   };
 
