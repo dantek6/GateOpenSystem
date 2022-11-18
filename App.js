@@ -1,37 +1,42 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Text, View, StyleSheet, Image, Pressable } from "react-native";
 import lockCloseImage from "./assets/lock-close.png";
 import lockOpenImage from "./assets/lock-open.png";
 
-export default class App extends Component {
-  state = {
-    lockStatus: "Portón Cerrado\n(Presione para abir)",
+import { ref, update } from "firebase/database";
+//import StartFirebase, { FirebaseContext } from './firebase';
+import { db } from "./firebase/database.js";
+
+export default function App() {
+  const [doneState, setDone] = useState(false);
+
+  const displays = {
     image: lockCloseImage,
+    lockStatus: "Portón Cerrado\n(Presione para abir)",
   };
   pressedButton = () => {
-    if (this.state.lockStatus === "Portón Cerrado\n(Presione para abir)") {
-      this.setState({
-        lockStatus: "Portón Abierto\n(Presione para cerrar)",
-        image: lockOpenImage,
-      });
-    } else {
-      this.setState({
-        lockStatus: "Portón Cerrado\n(Presione para abir)",
-        image: lockCloseImage,
-      });
-    }
+    setDone(!doneState);
+    update(ref(db, "/Proyecto"), {
+      Puerta_Abierta: doneState,
+    });
   };
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>{this.state.lockStatus}</Text>
-        <Pressable onPress={() => this.pressedButton()} style={styles.button}>
-          <Image source={this.state.image} style={styles.image} />
-        </Pressable>
-      </View>
-    );
+
+  if (doneState) {
+    displays.image = lockOpenImage;
+    displays.lockStatus = "Portón Abierto\n(Presione para cerrar)";
+  } else {
+    displays.image = lockCloseImage;
+    displays.lockStatus = "Portón Cerrado\n(Presione para abir)";
   }
-};
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{displays.lockStatus}</Text>
+      <Pressable onPress={() => pressedButton()} style={styles.button}>
+        <Image source={displays.image} style={styles.image} />
+      </Pressable>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
